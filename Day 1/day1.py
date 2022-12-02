@@ -14,15 +14,15 @@ def main(run_test, part, test_input_path, input_path):
 
 
 def day1_part1(input_):
-    elves_calories_strs = input_.split('\n\n')
-    elves_total_calories = [sum(map(int, elf_calories_strs.split('\n')))
+    elves_calories_strs = input_.splitlines('\n\n')
+    elves_total_calories = [sum(map(int, elf_calories_strs.splitlines()))
                             for elf_calories_strs in elves_calories_strs]
     return max(elves_total_calories)
 
 
 def day1_part2(input_):
     elves_calories_strs = input_.split('\n\n')
-    elves_total_calories = [sum(map(int, elf_calories_strs.split('\n')))
+    elves_total_calories = [sum(map(int, elf_calories_strs.splitlines()))
                             for elf_calories_strs in elves_calories_strs]
     return sum(sorted(elves_total_calories)[-3:])
 

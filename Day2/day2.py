@@ -1,4 +1,4 @@
-RUN_TEST = True
+RUN_TEST = False
 PART = 1
 
 TEST_INPUT_PATH = 'test_input.txt'
@@ -7,22 +7,36 @@ INPUT_PATH = 'input.txt'
 
 def main(run_test, part, test_input_path, input_path):
     file_path = test_input_path if run_test else input_path
-    day_function = dayX_part1 if part == 1 else dayX_part2
+    day_function = day2_part1 if part == 1 else day2_part2
     input_ = get_input(file_path)
     print(day_function(input_))
 
 
-def dayX_part1(input_):
-    pass
+def day2_part1(input_):
+    points = sum(map(calc_points, input_.splitlines()))
+    return points
 
 
-def dayX_part2(input_):
+def calc_points(round_):
+    shape_points_dict = dict(zip("XYZ", [1, 2, 3]))
+    outcome_points_dict = dict(zip([0, 1, 2], [6, 3, 0]))  # order: I win, I draw, I lose
+    outcome_dict = {"X": "CAB", "Y": "ABC", "Z": "BCA"}  # order: I win, I draw, I lose
+
+    shape_opp, shape_me = round_.split(' ')
+    shape_points = shape_points_dict[shape_me]
+
+    outcome = outcome_dict[shape_me].index(shape_opp)
+    outcome_points = outcome_points_dict[outcome]
+    return shape_points + outcome_points
+
+
+def day2_part2(input_):
     pass
 
 
 def get_input(file_path):
     with open(file_path) as f:
-        input_ = ...
+        input_ = f.read()
 
     return input_
 

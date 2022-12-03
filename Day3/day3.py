@@ -1,5 +1,8 @@
+from functools import reduce
 from math import floor
 from string import ascii_lowercase, ascii_uppercase
+
+from more_itertools import grouper
 
 RUN_TEST = False
 PART = 2
@@ -33,24 +36,15 @@ def get_priority(char):
 
 def day3_part2(input_):
     prio_sum = 0
-    for group in group_every_n(input_, 3):
-        a, b, c = map(set, group)
-        shared_item_set = a.intersection(b).intersection(c)
+    for group in grouper(input_, 3):
+        item_sets = map(set, group)
+        shared_item_set = reduce(intersect, item_sets)
         prio_sum += get_priority(*shared_item_set)
     return prio_sum
 
 
-def group_every_n(lines, n):
-    groups = []
-    group = []
-    for ind, line in enumerate(lines, start=1):
-        group.append(line)
-        if ind % n == 0:
-            groups.append(group)
-            group = []
-    # if group:
-    #     groups.append(group)
-    return groups
+def intersect(set1, set2):
+    return set1.intersection(set2)
 
 
 def get_input(file_path):

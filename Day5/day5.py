@@ -1,5 +1,5 @@
 RUN_TEST = False
-PART = 1
+PART = 2
 
 TEST_INPUT_PATH = 'test_input.txt'
 INPUT_PATH = 'input.txt'
@@ -16,7 +16,7 @@ def day5_part1(input_):
     crates, instrs_str = input_
     crates_stacks = crates_to_stacks(crates)
     instrs = process_instrs(instrs_str)
-    exec_instrs(crates_stacks, instrs)
+    exec_instrs1(crates_stacks, instrs)
     return get_codeword(crates_stacks)
 
 
@@ -28,11 +28,19 @@ def get_codeword(crates_stacks):
     return word
 
 
-def exec_instrs(crates_stacks, instrs):
+def exec_instrs1(crates_stacks, instrs):
     for instr in instrs:
         num_crates, start, end = instr
         for _ in range(num_crates):
             crates_stacks[end].append(crates_stacks[start].pop())
+
+
+def exec_instrs2(crates_stacks, instrs):
+    for instr in instrs:
+        num_crates, start, end = instr
+        crates_lifted = crates_stacks[start][-num_crates:]
+        crates_stacks[start] = crates_stacks[start][:-num_crates]
+        crates_stacks[end].extend(crates_lifted)
 
 
 def crates_to_stacks(crates_str):
@@ -70,7 +78,11 @@ def process_instrs(instrs_str):
 
 
 def day5_part2(input_):
-    pass
+    crates, instrs_str = input_
+    crates_stacks = crates_to_stacks(crates)
+    instrs = process_instrs(instrs_str)
+    exec_instrs2(crates_stacks, instrs)
+    return get_codeword(crates_stacks)
 
 
 def get_input(file_path, line_sep='\n'):

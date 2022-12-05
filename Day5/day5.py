@@ -16,7 +16,7 @@ def day5_part1(input_):
     crates, instrs_str = input_
     crates_stacks = crates_to_stacks(crates)
     instrs = process_instrs(instrs_str)
-    exec_instrs1(crates_stacks, instrs)
+    exec_instrs_part1(crates_stacks, instrs)
     return get_codeword(crates_stacks)
 
 
@@ -28,52 +28,56 @@ def get_codeword(crates_stacks):
     return word
 
 
-def exec_instrs1(crates_stacks, instrs):
-    for instr in instrs:
-        num_crates, start, end = instr
-        for _ in range(num_crates):
-            crates_stacks[end].append(crates_stacks[start].pop())
+def exec_instrs_part1(stacks, instrs):
+    for num_crates, start, end in instrs:
+        stacks[start], crates_lifted_rev = split_at(stacks[start], -num_crates)
+        crates_lifted = list(reversed(crates_lifted_rev))
+        stacks[end] += crates_lifted
 
 
-def exec_instrs2(crates_stacks, instrs):
-    for instr in instrs:
-        num_crates, start, end = instr
-        crates_lifted = crates_stacks[start][-num_crates:]
-        crates_stacks[start] = crates_stacks[start][:-num_crates]
-        crates_stacks[end].extend(crates_lifted)
+def split_at(list_, ind):
+    return list_[:ind], list_[ind:]
+
+
+def exec_instrs_part2(stacks, instrs):
+    for num_crates, start, end in instrs:
+        stacks[start], crates_lifted = split_at(stacks[start], -num_crates)
+        stacks[end] += crates_lifted
 
 
 def crates_to_stacks(crates_str):
-    crates = crates_str.split('\n')
-    crate_width = 3   # = len('[X]')
-    crates, stack_nums = crates[:-1], crates[-1]
-    stack_nums = stack_nums.strip().split(crate_width * ' ')
+    content_width = 1   # number of symbols between [brackets]
+    crate_width = content_width + 2  # total number of symbols including [brackets]
+
+    crates_rows = crates_str.split('\n')
+    crates_rows, stack_ids_list = split_at(crates_rows, -1)
+    stack_ids = stack_ids_list[0].strip().split(crate_width * ' ')
+
     stacks = dict()
-    for stack_num in map(int, stack_nums):
+    for stack_id in map(int, stack_ids):
         cur_stack = []
-        for crate_row in reversed(crates):
-            crate_start, crate_end = crate_range_from_stack_num(stack_num)
-            crate_item = crate_row[crate_start:crate_end].strip('[] ')
-            if crate_item:
-                cur_stack.append(crate_item)
-        stacks[stack_num] = cur_stack
+        for crate_row in reversed(crates_rows):
+            start, end = range_from_stack_id(stack_id, content_width)
+            content = crate_row[start:end].strip('[] ')
+            if content:  # crate content is empty if no crate there - ignore!
+                cur_stack.append(content)
+        stacks[stack_id] = cur_stack
     return stacks
 
 
-def crate_range_from_stack_num(stack_num):
-    # based on crate_width = 3
-    start = 4 * (stack_num - 1)
-    end = 4 * stack_num - 1  # exclusive
+def range_from_stack_id(stack_id, crate_width):
+    start = (stack_id - 1) * (crate_width + 3)  # inclusive
+    end = stack_id * (crate_width + 3) - 1  # exclusive
     return start, end
 
 
 def process_instrs(instrs_str):
+    # return instructions in the form (x, y, z) consisting of ints
     instrs = []
     for instr in instrs_str.split('\n'):
         tokens = instr.split(' ')
-        instr = map(int, filter(lambda char: char.isdigit(), tokens))
-        instr = list(instr)
-        instrs.append(instr)
+        nums_gen = filter(lambda t: t.isdigit(), tokens)
+        instrs.append(tuple(map(int, nums_gen)))
     return instrs
 
 
@@ -81,7 +85,7 @@ def day5_part2(input_):
     crates, instrs_str = input_
     crates_stacks = crates_to_stacks(crates)
     instrs = process_instrs(instrs_str)
-    exec_instrs2(crates_stacks, instrs)
+    exec_instrs_part2(crates_stacks, instrs)
     return get_codeword(crates_stacks)
 
 

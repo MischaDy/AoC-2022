@@ -1,7 +1,7 @@
 from Day7.directory import Directory
 
 RUN_TEST = False
-PART = 1
+PART = 2
 
 TEST_INPUT_PATH = 'test_input.txt'
 INPUT_PATH = 'input.txt'
@@ -15,7 +15,7 @@ def main(run_test, part, test_input_path, input_path):
 
 
 def run_part1(input_):
-    size_lim = 100000
+    size_lim = 100_000
     root = build_root(input_)
     subdirs = root.get_all_subdirs()
     small_sizes = [s.get_size() for s in subdirs
@@ -60,7 +60,16 @@ def is_command(line):
 
 
 def run_part2(input_):
-    pass
+    total_disk_space = 70_000_000
+    needed_disk_space = 30_000_000
+
+    root = build_root(input_)
+    root_size = root.get_size()
+    unused_space = total_disk_space - root_size
+    space_to_free = needed_disk_space - unused_space
+
+    sizes = [s.get_size() for s in root.get_all_subdirs()]
+    return min(filter(lambda s: s >= space_to_free, sizes))
 
 
 def get_input(file_path, line_sep='\n'):

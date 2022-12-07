@@ -16,6 +16,14 @@ def main(run_test, part, test_input_path, input_path):
 
 def run_part1(input_):
     size_lim = 100000
+    root = build_root(input_)
+    subdirs = root.get_all_subdirs()
+    small_sizes = [s.get_size() for s in subdirs
+                   if s.get_size() <= size_lim]
+    return sum(small_sizes)
+
+
+def build_root(input_):
     root = Directory('/')
     cur_dir = root
     for i, line in enumerate(input_[1:], start=2):  # assume "cd /" as first cmd
@@ -29,23 +37,12 @@ def run_part1(input_):
             elif target_dir == '..':
                 cur_dir = cur_dir.parent
             else:
-                # TODO: Change!
-                # cur_dir.add_child(target_dir)
-                child = cur_dir.get_child(target_dir)
-                cur_dir = child  # cur_dir.get_child(target_dir)
-
+                cur_dir = cur_dir.get_child(target_dir)
         else:
             line_prefix, name = line.split(' ')
             size = line_prefix if line_prefix != 'dir' else 0
             cur_dir.add_child(name, size)
-        pass
-
-    # root.prettyprint()
-
-    subdirs = root.get_all_subdirs()
-    small_sizes = [s.get_size() for s in subdirs
-                   if s.get_size() <= size_lim]
-    return sum(small_sizes)
+    return root
 
 
 def parse_cmd(cmd, cur_path, filesys):

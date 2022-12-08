@@ -14,11 +14,6 @@ def main(run_test, part, test_input_path, input_path):
     print(day_function(input_))
 
 
-# def get_heights(visibles, heights):
-#     for row, col in visibles:
-#         yield heights[row][col]
-
-
 def run_part1(input_):
     dirs = '><v^'
     heights = [list(map(int, line))
@@ -42,7 +37,7 @@ def get_visibles(heights, dir_):
     return visibles
 
 
-def get_visibles_l2r(heights):
+def get_visibles_l2r(heights) -> Set[Tuple[int, int]]:
     visibles = set()
     for row, line in enumerate(heights):
         cur_row_max = float('-inf')
@@ -53,7 +48,7 @@ def get_visibles_l2r(heights):
     return visibles
 
 
-def get_visibles_r2l(heights):
+def get_visibles_r2l(heights) -> Set[Tuple[int, int]]:
     visibles = set()
     for row, line in enumerate(heights):
         cur_row_max = float('-inf')
@@ -65,20 +60,20 @@ def get_visibles_r2l(heights):
     return visibles
 
 
-def switch_coords(tuples: Set[Tuple]):
-    return set((col, row) for row, col in tuples)
-
-
-def get_visibles_u2d(heights):
+def get_visibles_u2d(heights) -> Set[Tuple[int, int]]:
     rot_heights = transpose(heights)
     heights_horiz = get_visibles_l2r(rot_heights)
     return switch_coords(heights_horiz)
 
 
-def get_visibles_d2u(heights):
+def get_visibles_d2u(heights) -> Set[Tuple[int, int]]:
     rot_heights = transpose(heights)
     heights_horiz = get_visibles_r2l(rot_heights)
     return switch_coords(heights_horiz)
+
+
+def switch_coords(tuples: Set[Tuple]):
+    return set((col, row) for row, col in tuples)
 
 
 def transpose(list_2d):

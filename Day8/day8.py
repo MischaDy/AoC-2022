@@ -1,7 +1,10 @@
+from functools import reduce
+from itertools import product, takewhile
+# from math import prod
 from typing import Set, Tuple
 
-RUN_TEST = False
-PART = 1
+RUN_TEST = True
+PART = 2
 
 TEST_INPUT_PATH = 'test_input.txt'
 INPUT_PATH = 'input.txt'
@@ -82,7 +85,58 @@ def transpose(list_2d):
 
 
 def run_part2(input_):
-    pass
+    indices = range(len(input_))
+    positions = product(indices, repeat=2)
+    heights = [list(map(int, line))
+               for line in input_]
+    heights_t = transpose(heights)
+    scores = []
+    for row, col in positions:
+        visible_heights = get_visible_heights_from(row, col, heights, heights_t)
+        score = prod(visible_heights)
+        scores.append(score)
+    return scores
+
+
+# def get_visibles_heights(visibles, heights, max_=float('inf')):
+#     for row, col in visibles:
+#         height = heights[row][col]
+#         if height < max_:
+#             yield height
+
+
+def get_visible_heights_from(row, col, heights, heights_t):
+    visible_heights = set()
+    tree_height = heights[row][col]
+
+    new_visible_heights = get_visible_heights_horiz(heights[row][col + 1:], tree_height)
+    visible_heights.update(new_visible_heights)
+    new_visible_heights = get_visible_heights_horiz(reversed(heights[row][:col - 1]),
+                                                    tree_height)
+    visible_heights.update(new_visible_heights)
+
+    new_visible_heights = get_visible_heights_vert(heights_t[col][row + 1:], tree_height)
+    visible_heights.update(new_visible_heights)
+    new_visible_heights = get_visible_heights_vert(reversed(heights_t[col][:row - 1]),
+                                                   tree_height)
+    visible_heights.update(new_visible_heights)
+    return visible_heights
+
+
+def get_visible_heights_horiz(heights, max_=float('inf')) -> Set[Tuple[int, int]]:
+    visibles_gen = takewhile(lambda h: h < max_, heights)
+    return set(visibles_gen)
+
+
+def get_visible_heights_vert(heights, max_=float('inf')) -> Set[Tuple[int, int]]:
+    visibles_gen = takewhile(lambda h: h < max_, heights)
+    return set(visibles_gen)
+
+
+def prod(iterable):
+    if not iterable:
+        return 0
+    return reduce(lambda x, y: x * y, iterable)
 
 
 def get_input(file_path, line_sep='\n'):

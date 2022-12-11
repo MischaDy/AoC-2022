@@ -1,9 +1,10 @@
+from functools import reduce
 from typing import List, Tuple
 
 from Day11.monkey import Monkey
 
 RUN_TEST = False
-PART = 1
+PART = 2
 
 TEST_INPUT_PATH = 'test_input.txt'
 INPUT_PATH = 'input.txt'
@@ -77,7 +78,22 @@ def get_last_int(string, sep=' '):
 
 
 def run_part2(input_):
-    pass
+    num_rounds = 10_000
+    monkeys = get_monkeys(input_)
+    worry_reducer = get_worry_div(monkeys)
+    for _ in range(num_rounds):
+        for monkey in monkeys:
+            monkey.make_turn2(worry_reducer)
+    max_checked1, max_checked2 = sorted(m.num_items_checked for m in monkeys)[-2:]
+    return max_checked1 * max_checked2
+
+
+def get_worry_div(monkeys):
+    return prod(m.test_div for m in monkeys)
+
+
+def prod(iterable):
+    return reduce(lambda x, y: x * y, iterable)
 
 
 def get_input(file_path, line_sep='\n'):

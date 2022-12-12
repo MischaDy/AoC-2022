@@ -20,11 +20,11 @@ def run_part2(input_):
     pass
 
 
-def get_input(file_path, line_sep='\n'):
+def get_input(file_path, line_sep=None):
     with open(file_path) as f:
         input_ = f.read()
 
-    if line_sep:
+    if line_sep is not None:
         input_ = input_.split(line_sep)
     return input_
 

@@ -1,4 +1,8 @@
-RUN_TEST = True
+from itertools import chain
+
+from helpers import minmax
+
+RUN_TEST = False
 PART = 1
 
 TEST_INPUT_PATH = 'test_input.txt'
@@ -10,10 +14,6 @@ def main(run_test, part, test_input_path, input_path):
     day_function = run_part1 if part == 1 else run_part2
     input_ = get_input(file_path, line_sep='\n')
     print(day_function(input_))
-
-
-def minmax(a, b):
-    return (a, b) if a <= b else (b, a)
 
 
 def points_to_structure(points):
@@ -30,7 +30,7 @@ def points_to_structure(points):
 
 def get_points(rock_path):
     for pointstr in rock_path.split(' -> '):
-        point = map(int, pointstr.split(','))
+        point = tuple(map(int, pointstr.split(',')))
         yield point
 
 
@@ -45,7 +45,7 @@ def get_rocks(input_):
 
 def get_ylim(rocks):
     lowest_rock = max(rocks, key=lambda r: r[1])
-    return lowest_rock[1] - 1
+    return lowest_rock[1] + 1
 
 
 def is_blocked(pos, sandpile, rocks):
@@ -70,9 +70,50 @@ def let_sandgrain_fall(sandpile, rocks, source, ylim):
             # blocked, next might be able to be blocked too
             can_next_fall = True
             break
-
-    sandpile.add((cur_x, cur_y))
+    if can_next_fall:
+        sandpile.add((cur_x, cur_y))
     return can_next_fall
+
+
+def get_minmax_coords(sandpile, rocks, source):
+    minx, miny = float('inf'), float('inf')
+    maxx, maxy = float('-inf'), float('-inf')
+    for x, y in chain(sandpile, rocks, [source]):
+        minx, miny = min(minx, x), min(miny, y)
+        maxx, maxy = max(maxx, x), max(maxy, y)
+    return minx, maxx, miny, maxy
+
+
+def get_dims(minmax_coords):
+    minx, maxx, miny, maxy = minmax_coords
+    num_rows = maxy - miny + 1
+    num_cols = maxx - minx + 1
+    return num_rows, num_cols
+
+
+def shift(x, y, minmax_coords):
+    minx, _, miny, _ = minmax_coords
+    shifted_x = x - minx
+    shifted_y = y - miny
+    return shifted_x, shifted_y
+
+
+def place_objects(coords, state, minmax_coords, symb):
+    for x, y in coords:
+        shifted_x, shifted_y = shift(x, y, minmax_coords)
+        state[shifted_y][shifted_x] = symb
+
+
+def draw(sandpile, rocks, source):
+    minmax_coords = get_minmax_coords(sandpile, rocks, source)
+    num_rows, num_cols = get_dims(minmax_coords)
+    state = [['.' for _ in range(num_cols)]
+             for _ in range(num_cols)]
+    place_objects(sandpile, state, minmax_coords, symb='o')
+    place_objects(rocks, state, minmax_coords, symb='#')
+    place_objects([source], state, minmax_coords, symb='+')
+    state_str = '\n'.join(map(''.join, state))
+    print(state_str, end='\n\n')
 
 
 def run_part1(input_):
@@ -82,6 +123,7 @@ def run_part1(input_):
     sandpile = set()
     can_fall = True
     while can_fall:
+        # draw(sandpile, rocks, source)
         can_fall = let_sandgrain_fall(sandpile, rocks, source, ylim)
     return len(sandpile)
 

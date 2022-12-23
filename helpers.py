@@ -9,3 +9,7 @@ def flatten_once(list_):
     for sublist in list_:
         flat_list.extend(sublist)
     return flat_list
+
+
+def minmax(a, b):
+    return (a, b) if a <= b else (b, a)

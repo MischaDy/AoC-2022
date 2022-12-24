@@ -2,8 +2,8 @@ from itertools import chain
 
 from helpers import minmax
 
-RUN_TEST = False
-PART = 1
+RUN_TEST = True
+PART = 2
 
 TEST_INPUT_PATH = 'test_input.txt'
 INPUT_PATH = 'input.txt'
@@ -108,7 +108,7 @@ def draw(sandpile, rocks, source):
     minmax_coords = get_minmax_coords(sandpile, rocks, source)
     num_rows, num_cols = get_dims(minmax_coords)
     state = [['.' for _ in range(num_cols)]
-             for _ in range(num_cols)]
+             for _ in range(num_rows)]
     place_objects(sandpile, state, minmax_coords, symb='o')
     place_objects(rocks, state, minmax_coords, symb='#')
     place_objects([source], state, minmax_coords, symb='+')
@@ -128,8 +128,64 @@ def run_part1(input_):
     return len(sandpile)
 
 
+def let_sandgrain_fall2(sandpile, rocks, source, ylim):
+    cur_x, cur_y = source
+    floor_y = ylim + 1
+    while cur_y < floor_y:
+        next_y = cur_y + 1
+        pos_below = (cur_x, next_y)
+        pos_below_left = (cur_x - 1, next_y)
+        pos_below_right = (cur_x + 1, next_y)
+        if not is_blocked(pos_below, sandpile, rocks):
+            cur_x, cur_y = pos_below
+        elif not is_blocked(pos_below_left, sandpile, rocks):
+            cur_x, cur_y = pos_below_left
+        elif not is_blocked(pos_below_right, sandpile, rocks):
+            cur_x, cur_y = pos_below_right
+        else:
+            break
+    final_y = min(cur_y, floor_y)
+    sandpile.add((cur_x, final_y))
+
+
+def draw_floor(floor_y, floor_width, state):
+    for col in range(floor_width):
+        state[floor_y][col] = '#'
+
+
+# def get_minmax_coords2(sandpile, rocks, source, buffer=3):
+#     minx, maxx, miny, maxy = get_minmax_coords(sandpile, rocks, source)
+#     # miny is source --> leave unchanged
+#     return minx - buffer, maxx + buffer, miny, maxy
+
+
+def draw2(sandpile, rocks, source, num_rows):
+    minmax_coords = get_minmax_coords(sandpile, rocks, source)
+    _, num_cols = get_dims(minmax_coords)
+    buffer = 3
+    num_cols += 2 * buffer
+    state = [['.' for _ in range(num_cols)]
+             for _ in range(num_rows)]
+    place_objects(sandpile, state, minmax_coords, symb='o')
+    place_objects(rocks, state, minmax_coords, symb='#')
+    place_objects([source], state, minmax_coords, symb='+')
+    floor_y = num_rows - 1
+    draw_floor(floor_y, num_cols, state)
+    state_str = '\n'.join(map(''.join, state))
+    print(state_str, end='\n\n')
+
+
 def run_part2(input_):
-    pass
+    source = (500, 0)
+    rocks = get_rocks(input_)
+    ylim = get_ylim(rocks)
+    ylim += 2
+    num_rows = ylim
+    sandpile = set()
+    while source not in sandpile:
+        draw2(sandpile, rocks, source, num_rows)
+        let_sandgrain_fall2(sandpile, rocks, source, ylim)
+    return len(sandpile)
 
 
 def get_input(file_path, line_sep=None):

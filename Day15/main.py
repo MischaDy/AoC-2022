@@ -1,7 +1,7 @@
 import re
 from typing import Tuple
 
-RUN_TEST = True
+RUN_TEST = False
 PART = 1
 
 TEST_INPUT_PATH = 'test_input.txt'
@@ -35,31 +35,33 @@ def manhattan_dist(pos1, pos2):
     return abs(x1 - x2) + abs(y1 - y2)
 
 
-def count_radius_intersections(row, sensor, sensor_beacon_dist):
+def get_radius_intersections(row, sensor, sensor_beacon_dist):
     sensor_x, sensor_y = sensor
     row_sensor_dist = abs(row - sensor_y)
     delta_dist = sensor_beacon_dist - row_sensor_dist
-    if delta_dist <= 0:
-        return 0
-    # intersections = {-delta_dist, ..., 0, ..., delta_dist}
-    num_intersections = 2*delta_dist + 1  # = len(range(-delta_dist, delta_dist+1))
-    return num_intersections
+    if delta_dist < 0:
+        return []
+    lower_x = sensor_x - delta_dist
+    upper_x = sensor_x + delta_dist
+    return ((int_x, row) for int_x in range(lower_x, upper_x + 1))
 
 
-def count_occupied_coords_at(row, sensors_to_beacons):
-    num_occupied_coords = 0
+def get_occupied_coords_at(row, sensors_to_beacons):
+    occupied_coords = set()
     for sensor, beacon in sensors_to_beacons.items():
         dist = manhattan_dist(sensor, beacon)
-        num_intersections = count_radius_intersections(row, sensor, dist)
-        num_occupied_coords += num_intersections
-    return num_occupied_coords
+        intersections = get_radius_intersections(row, sensor, dist)
+        occupied_coords.update(intersections)
+    return occupied_coords
 
 
 def run_part1(input_):
     row = 10 if RUN_TEST else 2_000_000
     sensors_to_beacons = get_sensors_and_beacons(input_)
-    num_occupied_coords = count_occupied_coords_at(row, sensors_to_beacons)
-    return num_occupied_coords
+    occupied_coords = get_occupied_coords_at(row, sensors_to_beacons)
+    beacons = sensors_to_beacons.values()
+    beaconfree_zone = occupied_coords.difference(beacons)
+    return len(beaconfree_zone)
 
 
 def run_part2(input_):
@@ -75,5 +77,16 @@ def get_input(file_path, line_sep=None):
     return input_
 
 
+def test():
+    sensor = (8, 7)
+    beacon = (2, 10)
+    dist = manhattan_dist(sensor, beacon)
+    for row in range(-3, 17 + 1):
+        num_intersections = get_radius_intersections(row, sensor, dist)
+        print(f'{row}: {num_intersections}')
+
+
 if __name__ == '__main__':
     main(RUN_TEST, PART, TEST_INPUT_PATH, INPUT_PATH)
+    # test()
+

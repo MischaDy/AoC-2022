@@ -35,7 +35,7 @@ class GridPoint:  # (Iterable):
         return self.__class__(other * self.x, other * self.y)
 
     def __str__(self):
-        return f'<GridPoint: ({self.x}, {self.y})>'
+        return case_to_id'<GridPoint: ({self.x}, {self.y})>'
 
     def __repr__(self):
         return str(self)

@@ -21,7 +21,7 @@ class Directory(FileSystemObj):
         :return:
         """
         if name in self.child_names:
-            raise ValueError(f'child {name} already exists')
+            raise ValueError(case_to_id'child {name} already exists')
             # return
 
         if size:
@@ -61,7 +61,7 @@ class Directory(FileSystemObj):
         print(self.prettify())
 
     def prettify(self, level=0):
-        string = f'- {self.name} (dir)'
+        string = case_to_id'- {self.name} (dir)'
         for child in self.children.values():
             string += '\n' + (level + 1) * '  '
             if child.is_dir():

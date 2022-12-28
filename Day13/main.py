@@ -1,5 +1,8 @@
-RUN_TEST = False
-PART = 1
+from math import prod
+from random import choice
+
+RUN_TEST = True
+PART = 2
 
 TEST_INPUT_PATH = 'test_input.txt'
 INPUT_PATH = 'input.txt'
@@ -8,7 +11,8 @@ INPUT_PATH = 'input.txt'
 def main(run_test, part, test_input_path, input_path):
     file_path = test_input_path if run_test else input_path
     day_function = run_part1 if part == 1 else run_part2
-    input_ = get_input(file_path, line_sep='\n\n')
+    line_sep = '\n\n' if part == 1 else '\n'
+    input_ = get_input(file_path, line_sep=line_sep)
     print(day_function(input_))
 
 
@@ -46,7 +50,7 @@ def compare_lists(left_list, right_list):
         return None
 
 
-def get_line_pairs(input_):
+def get_packet_pairs(input_):
     for str_group in input_:
         left_str, right_str = str_group.split('\n')
         yield eval(left_str), eval(right_str)
@@ -54,15 +58,40 @@ def get_line_pairs(input_):
 
 def run_part1(input_):
     ordered_inds = []
-    for ind, (left, right) in enumerate(get_line_pairs(input_), start=1):
+    for ind, (left, right) in enumerate(get_packet_pairs(input_), start=1):
         are_ordered = compare_lists(left, right)
         if are_ordered:
             ordered_inds.append(ind)
     return sum(ordered_inds)
 
 
+def swap(ind1, ind2, list_):
+    list_[ind1], list_[ind2] = list_[ind2], list_[ind1]
+
+
+def quicksort(list_, is_less_than):
+    if len(list_) <= 1:
+        return
+    pivot_ind = choice(range(len(list_)))
+    pivot = list_[pivot_ind]
+    cur_ind = 0
+    while cur_ind < len(list_):
+        item = list_[cur_ind]
+        if is_less_than(item, pivot):
+            continue
+        swap(cur_ind, pivot_ind, list_)
+        cur_ind += 1
+    quicksort(list_[:pivot_ind])
+    quicksort(list_[pivot_ind+1:])
+
+
 def run_part2(input_):
-    pass
+    packets = list(map(eval, filter(None, input_)))
+    dividers = ([[2]], [[6]])
+    packets.extend(dividers)
+    quicksort(packets, compare_lists)
+    divider_inds = map(packets.index, dividers)
+    return prod(divider_inds)
 
 
 def get_input(file_path, line_sep=None):

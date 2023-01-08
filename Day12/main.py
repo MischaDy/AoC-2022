@@ -1,6 +1,3 @@
-from Day12.graph import Graph
-
-
 RUN_TEST = True
 PART = 1
 
@@ -16,9 +13,7 @@ def main(run_test, part, test_input_path, input_path):
 
 
 def run_part1(input_):
-    graph = Graph.from_heightmap(input_)
-    path = graph.run_bfs()
-    return len(path)
+    pass
 
 
 def run_part2(input_):

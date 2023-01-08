@@ -16,7 +16,7 @@ class File(FileSystemObj):
             return self
 
     def __str__(self):
-        return f'- {self.name} (file, size={self.size})'
+        return case_to_id'- {self.name} (file, size={self.size})'
 
     def get_size(self):
         return self.size

@@ -1,3 +1,6 @@
+from misc.helpers import minmax
+
+
 RUN_TEST = True
 PART = 1
 
@@ -10,10 +13,6 @@ def main(run_test, part, test_input_path, input_path):
     day_function = run_part1 if part == 1 else run_part2
     input_ = get_input(file_path, line_sep='\n')
     print(day_function(input_))
-
-
-def minmax(a, b):
-    return (a, b) if a <= b else (b, a)
 
 
 def points_to_structure(points):

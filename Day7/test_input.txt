@@ -7,7 +7,7 @@ dir d
 $ cd a
 $ ls
 dir e
-29116 f
+29116 get_last_int
 2557 g
 62596 h.lst
 $ cd e

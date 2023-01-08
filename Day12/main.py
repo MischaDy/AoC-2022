@@ -1,7 +1,7 @@
 from Day12.grid import Grid
 
 RUN_TEST = False
-PART = 1
+PART = 2
 
 TEST_INPUT_PATH = 'test_input.txt'
 INPUT_PATH = 'input.txt'
@@ -21,7 +21,9 @@ def run_part1(input_):
 
 
 def run_part2(input_):
-    pass
+    grid = Grid.from_heightmap(input_)
+    dist = grid.run_bfs_mssp()
+    return dist
 
 
 def get_input(file_path, line_sep=None):

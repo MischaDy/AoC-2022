@@ -40,15 +40,43 @@ class Grid:
         path = self.reconstruct_path()
         return len(path) - 1
 
-    def reconstruct_path(self):
-        cur_node = self.target
+    def run_bfs_mssp(self):
+        # based on https://en.wikipedia.org/wiki/Breadth-first_search#Pseudocode
+        a_node_chars = 'Sa'
+        self.target.was_visited = True
+        queue = deque([self.target])
+        cur_node = None  # for the linter...
+        while queue:
+            cur_node = queue.popleft()
+            if cur_node.char in a_node_chars:
+                break
+            for neighbor in cur_node.neighbors:
+                if neighbor.was_visited or cur_node.val - neighbor.val > 1:
+                    # we've been there or don't want to climb
+                    continue
+                neighbor.was_visited = True
+                neighbor.parent = cur_node
+                queue.append(neighbor)
+        path = self.reconstruct_path(cur_node, GridNode.is_target)
+        return len(path) - 1
+
+    def reconstruct_path(self, start=None, finish_check=GridNode.is_root):
+        if start is None:
+            start = self.target
+        cur_node = start
         path = [cur_node]
-        while cur_node.parent is not None:
+        while not finish_check(cur_node):
             cur_node = cur_node.parent
             path.append(cur_node)
-        # sanity check
-        if cur_node.parent is None and not GridNode.is_root(cur_node):
-            raise RuntimeError('reconstructed path invalid!')
+        return path
+
+    @staticmethod
+    def reconstruct_path2(start):
+        cur_node = start
+        path = [cur_node]
+        while not GridNode.is_target(cur_node):
+            cur_node = cur_node.parent
+            path.append(cur_node)
         return path
 
     @classmethod

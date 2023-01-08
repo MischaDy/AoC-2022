@@ -30,11 +30,11 @@ class GridNode:
         self.neighbors_dict[key] = value
 
     def __str__(self):
-        return f'<GridNode {self.char}, was visited: {self.was_visited}, parent: {self.parent}>'
+        return f'<GridNode {self.char}, was visited: {self.was_visited}'  # , parent: {self.parent}>'
 
     def __repr__(self):
         neighbors_str = ', '.join(f'{dir_}: {neighbor}' for dir_, neighbor in self.neighbors_dict.items())
-        return f'<GridNode {self.char}, was visited: {self.was_visited}, parent: {self.parent}, {neighbors_str}>'
+        return f'<GridNode {self.char}, was visited: {self.was_visited}'  # , parent: {self.parent}, {neighbors_str}>'
 
     @property
     def neighbors(self):

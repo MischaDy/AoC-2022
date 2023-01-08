@@ -1,3 +1,5 @@
+from Day12.grid import Grid
+
 RUN_TEST = True
 PART = 1
 
@@ -13,7 +15,9 @@ def main(run_test, part, test_input_path, input_path):
 
 
 def run_part1(input_):
-    pass
+    grid = Grid.from_heightmap(input_)
+    dist = grid.run_bfs_sssp()
+    return dist
 
 
 def run_part2(input_):

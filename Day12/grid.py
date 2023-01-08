@@ -24,20 +24,32 @@ class Grid:
 
     def run_bfs_sssp(self):
         # based on https://en.wikipedia.org/wiki/Breadth-first_search#Pseudocode
-        self.root.visited = True
-        self.root.dist = 0
+        self.root.was_visited = True
         queue = deque([self.root])
         while queue:
             cur_node = queue.popleft()
             if GridNode.is_target(cur_node):
-                return cur_node.dist
+                break
             for neighbor in cur_node.neighbors:
                 if neighbor.was_visited or neighbor.val - cur_node.val > 1:
                     # we've been there or don't want to climb
                     continue
                 neighbor.was_visited = True
-                neighbor.dist = min(neighbor.dist, cur_node.dist + 1)
+                neighbor.parent = cur_node
                 queue.append(neighbor)
+        path = self.reconstruct_path()
+        return len(path) - 1
+
+    def reconstruct_path(self):
+        cur_node = self.target
+        path = [cur_node]
+        while cur_node.parent is not None:
+            cur_node = cur_node.parent
+            path.append(cur_node)
+        # sanity check
+        if cur_node.parent is None and not GridNode.is_root(cur_node):
+            raise RuntimeError('reconstructed path invalid!')
+        return path
 
     @classmethod
     def from_heightmap(cls, hm: List[str]):
@@ -53,10 +65,13 @@ class Grid:
             for c, col in enumerate(row):
                 node = nodes[r][c]
                 for dir_, (delta_r, delta_c) in shift_dict.items():
-                    try:
-                        neighbor = nodes[r + delta_r][c + delta_c]
-                    except IndexError:
+                    shifted_r, shifted_c = r + delta_r, c + delta_c
+                    if shifted_r not in range(len(nodes)):
                         neighbor = None
+                    elif shifted_c not in range(len(row)):
+                        neighbor = None
+                    else:
+                        neighbor = nodes[r + delta_r][c + delta_c]
                     node[dir_] = neighbor
         nodes_flat = flatten_once(nodes)
         root = next(filter(GridNode.is_root, nodes_flat))

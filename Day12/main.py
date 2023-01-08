@@ -1,6 +1,6 @@
 from Day12.grid import Grid
 
-RUN_TEST = True
+RUN_TEST = False
 PART = 1
 
 TEST_INPUT_PATH = 'test_input.txt'

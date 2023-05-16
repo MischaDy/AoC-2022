@@ -1,5 +1,5 @@
-from itertools import cycle
-
+from Day17.chamber import Chamber
+from Day17.rock import Rock, PATTERNS
 
 RUN_TEST = True
 PART = 1
@@ -13,25 +13,7 @@ CHAMBER_WIDTH = 7
 START_DIST_LEFT = 2  # left edge starts out two units away from left wall
 START_DIST_DOWN = 3  # bottom edge starts out three units above the highest rock/floor
 
-ROCKS = [
-    '####',
-
-    '.#.\n'
-    '###\n'
-    '.#.\n',
-
-    '..#\n'
-    '..#\n'
-    '###\n',
-
-    '#\n'
-    '#\n'
-    '#\n'
-    '#\n',
-
-    '##\n'
-    '##\n'
-]
+ROCKS = list(map(Rock, PATTERNS))
 
 
 def main(run_test, part, test_input_path, input_path):
@@ -42,37 +24,21 @@ def main(run_test, part, test_input_path, input_path):
 
 
 def run_part1(input_):
-    jet_cycle = cycle(input_)
-    rocks_cycle = cycle(...)
-    chamber = ...
-    rock = place_new_rock(rocks_cycle, chamber)
+    jets = input_
+    chamber = Chamber(CHAMBER_WIDTH, jets, ROCKS)
+    chamber.place_new_rock()
     for i in range(NUM_ITERATIONS):
-        push_rock(rock, jet_cycle, chamber)
-        let_rock_fall(rock, chamber)
-        if has_landed(rock, chamber):
-            rock = place_new_rock(rocks_cycle, chamber)
-    height = get_height(chamber)
-    return height
+        chamber.push_rock()
+        chamber.let_rock_fall()
+        if chamber.has_last_rock_landed():
+            chamber.place_new_rock()
+    return chamber.get_height()
 
 
 def place_new_rock(rocks_cycle, chamber):
-    pass
-
-
-def push_rock(cur_rock, jet_cycle, chamber):
-    pass
-
-
-def let_rock_fall(cur_rock, chamber):
-    pass
-
-
-def has_landed(rock, chamber):
-    pass
-
-
-def get_height(chamber):
-    pass
+    rock = next(rocks_cycle)
+    chamber.extend_left(rock)
+    return rock
 
 
 def run_part2(input_):

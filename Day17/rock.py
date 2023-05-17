@@ -1,4 +1,4 @@
-PATTERNS = [
+ROCK_PATTERNS = [
     ['####'],
 
     ['.#.',

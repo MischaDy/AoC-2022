@@ -1,5 +1,5 @@
 from Day17.chamber import Chamber
-from Day17.rock import Rock, PATTERNS
+from Day17.rock import ROCK_PATTERNS
 
 RUN_TEST = True
 PART = 1
@@ -10,10 +10,6 @@ INPUT_PATH = 'input.txt'
 NUM_ITERATIONS = 1
 
 CHAMBER_WIDTH = 7
-START_DIST_LEFT = 2  # left edge starts out two units away from left wall
-START_DIST_DOWN = 3  # bottom edge starts out three units above the highest rock/floor
-
-ROCKS = list(map(Rock, PATTERNS))
 
 
 def main(run_test, part, test_input_path, input_path):
@@ -25,7 +21,7 @@ def main(run_test, part, test_input_path, input_path):
 
 def run_part1(input_):
     jets = input_
-    chamber = Chamber(CHAMBER_WIDTH, jets, ROCKS)
+    chamber = Chamber(CHAMBER_WIDTH, jets, ROCK_PATTERNS)
     chamber.place_new_rock()
     for i in range(NUM_ITERATIONS):
         chamber.push_rock()

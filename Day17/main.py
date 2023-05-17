@@ -1,5 +1,4 @@
-from Day17.chamber import Chamber
-from Day17.rock import ROCK_PATTERNS
+from itertools import cycle
 
 RUN_TEST = True
 PART = 1
@@ -10,6 +9,28 @@ INPUT_PATH = 'input.txt'
 NUM_ITERATIONS = 1
 
 CHAMBER_WIDTH = 7
+START_DIST_LEFT = 2  # left edge starts out two units away from left wall
+START_DIST_DOWN = 3  # bottom edge starts out three units above the highest rock/floor
+
+ROCK_PATTERNS = [
+    ['####'],
+
+    ['.#.',
+     '###',
+     '.#.'],
+
+    ['..#',
+     '..#',
+     '###'],
+
+    ['#',
+     '#',
+     '#',
+     '#'],
+
+    ['##',
+     '##'],
+]
 
 
 def main(run_test, part, test_input_path, input_path):
@@ -20,21 +41,46 @@ def main(run_test, part, test_input_path, input_path):
 
 
 def run_part1(input_):
-    jets = input_
-    chamber = Chamber(CHAMBER_WIDTH, jets, ROCK_PATTERNS)
-    chamber.place_new_rock()
+    jets_cycle = cycle(input_)
+    rocks_cycle = cycle(ROCK_PATTERNS)
+    chamber = []
+
+    pos, rock = place_new_rock(rocks_cycle, chamber)
     for i in range(NUM_ITERATIONS):
-        chamber.push_rock()
-        chamber.let_rock_fall()
-        if chamber.has_last_rock_landed():
-            chamber.place_new_rock()
-    return chamber.get_height()
+        pos = push_rock(jets_cycle, pos, rock, chamber)
+        pos = let_rock_fall(pos, rock, chamber)
+        if has_last_rock_landed(pos, rock, chamber):
+            pos, rock = place_new_rock(rocks_cycle)
+    return get_height(chamber)
 
 
 def place_new_rock(rocks_cycle, chamber):
-    rock = next(rocks_cycle)
-    chamber.extend_left(rock)
-    return rock
+    row = get_height(chamber) + START_DIST_DOWN
+    col = START_DIST_LEFT
+    return (row, col), next(rocks_cycle)
+
+
+def push_rock(jets_cycle, pos, rock, chamber):
+    jet = next(jets_cycle)
+    row, col = pos
+
+    if (jet == '<' and col == 0) or (jet == '>' and col == CHAMBER_WIDTH-1):
+        new_col = col
+    else:
+        new_col = ...
+    return row, new_col
+
+
+def let_rock_fall(pos, rock, chamber):
+    pass
+
+
+def has_last_rock_landed(pos, rock, chamber):
+    pass
+
+
+def get_height(chamber):
+    return len(chamber)
 
 
 def run_part2(input_):

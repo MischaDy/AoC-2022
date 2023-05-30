@@ -1,12 +1,13 @@
 from copy import deepcopy
 from itertools import cycle
+from timeit import default_timer
 
 RUN_TEST = True
 
 TEST_INPUT_PATH = 'test_input.txt'
 INPUT_PATH = 'input.txt'
 
-NUM_LANDED_ROCKS = 2022
+NUM_LANDED_ROCKS = int(1e5)  # goal: 1e12!!
 PRINT = False  # debug
 
 CHAMBER_WIDTH = 7
@@ -214,3 +215,5 @@ def get_input(file_path, line_sep=None):
 if __name__ == '__main__':
     t1 = default_timer()
     main(RUN_TEST, TEST_INPUT_PATH, INPUT_PATH)
+    t2 = default_timer()
+    print(f'duration: {t2-t1}s')

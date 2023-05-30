@@ -53,22 +53,34 @@ def run_part1(input_):
 
     num_landed_rocks = 0
     pos, rock = place_new_rock(rocks_cycle, chamber)
-    while num_landed_rocks < NUM_LANDED_ROCKS:
+
+    global PRINT
+    if PRINT:
+        print('new rock placed...')
         print_state(rock, pos, chamber)
+    while num_landed_rocks < NUM_LANDED_ROCKS:
         jet = next(jets_cycle)
         pos = push_rock(jet, pos, rock, chamber)
+        if PRINT:
+            print('pushed by jet:', jet)
+            print_state(rock, pos, chamber)
         pos, has_landed = let_rock_fall(pos, rock, chamber)
         if has_landed:
             num_landed_rocks += 1
             chamber = place_landed_rock(rock, pos, chamber)
             pos, rock = place_new_rock(rocks_cycle, chamber)
-        if PRINT:
-            print('jet:', jet)
-    print_state(rock, pos, chamber)
+            if PRINT:
+                print('rock landed. new rock placed...')
+                print_state(rock, pos, chamber)
+
             true_height = temp_heights[num_landed_rocks-1]
             if get_height(chamber) != true_height:
                 print(f'After {num_landed_rocks} fallen rocks, height is {get_height(chamber)}, but should be {true_height}!')
                 break
+        else:
+            if PRINT:
+                print('rock falling...')
+                print_state(rock, pos, chamber)
     return get_height(chamber)
 
 

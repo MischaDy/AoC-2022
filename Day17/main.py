@@ -7,7 +7,7 @@ PART = 1
 TEST_INPUT_PATH = 'test_input.txt'
 INPUT_PATH = 'input.txt'
 
-NUM_LANDED_ROCKS = 50
+NUM_LANDED_ROCKS = 2022
 PRINT = False  # debug
 
 CHAMBER_WIDTH = 7
@@ -121,18 +121,19 @@ def collides(pos, rock, jet, chamber):
         return True
 
     max_chamber_index = len(chamber) - 1
-    collision_index = 0 if jet == '<' else -1
+    jet_shift = -1 if jet == '<' else +1
     for row_shift, rock_level in enumerate(reversed(rock)):
         rock_row_ind = row_ind + row_shift
-        if rock_level[collision_index] != '#':
-            # outermost part of rock empty
-            continue
-        elif max_chamber_index < rock_row_ind:
+        if max_chamber_index < rock_row_ind:
             # chamber not high enough for collision at this level
             continue
-        else:
-            chamber_collision_col = leftmost_rock_ind-1 if jet == '<' else rightmost_rock_ind+1
-            if chamber[rock_row_ind][chamber_collision_col] == '#':
+
+        for col_shift, rock_part in enumerate(rock_level):
+            if rock_part == '.':
+                # empty space can't collide with chamber
+                continue
+            cur_col = leftmost_rock_ind + col_shift
+            if chamber[rock_row_ind][cur_col + jet_shift] == '#':
                 return True
     return False
 

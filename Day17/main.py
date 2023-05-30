@@ -150,7 +150,7 @@ def let_rock_fall(pos, rock, chamber):
     :return: tuple of new position and whether the rock has landed
     """
     max_chamber_index = len(chamber) - 1
-    row_ind, col_ind = pos
+    row_ind, leftmost_rock_ind = pos
     for row_shift, rock_level in enumerate(reversed(rock)):
         rock_row_ind = row_ind + row_shift
         if max_chamber_index < rock_row_ind - 1:
@@ -160,10 +160,10 @@ def let_rock_fall(pos, rock, chamber):
             if rock_part == '.':
                 # empty space can't collide with chamber
                 continue
-            cur_col = col_ind + col_shift
+            cur_col = leftmost_rock_ind + col_shift
             if chamber[rock_row_ind-1][cur_col] in ('#', '-'):
                 return pos, True
-    return (row_ind-1, col_ind), False
+    return (row_ind-1, leftmost_rock_ind), False
 
 
 def place_landed_rock(rock, pos, chamber):

@@ -54,9 +54,6 @@ def run_day17(input_):
     while num_landed_rocks < NUM_LANDED_ROCKS:
         jet = next(jets_cycle)
         pos = push_rock(jet, pos, rock, chamber)
-        if PRINT:
-            print('pushed by jet:', jet)
-            print_state(rock, pos, chamber)
         pos, has_landed = let_rock_fall(pos, rock, chamber)
         if has_landed:
             num_landed_rocks += 1
@@ -65,24 +62,16 @@ def run_day17(input_):
             if PRINT:
                 print('rock landed. new rock placed...')
                 print_state(rock, pos, chamber)
-        else:
-            if PRINT:
-                print('rock falling...')
-                print_state(rock, pos, chamber)
     return get_height(chamber)
 
 
 def print_chamber(chamber):
-    if not PRINT:
-        return
     chamber_str = '\n'.join(f"|{''.join(row)}|"
                             for row in reversed(chamber))
     print(chamber_str, end=2*'\n')
 
 
 def print_state(rock, pos, chamber):
-    if not PRINT:
-        return
     chamber = place_landed_rock_temp(rock, pos, chamber)
     print_chamber(chamber)
 
@@ -223,4 +212,5 @@ def get_input(file_path, line_sep=None):
 
 
 if __name__ == '__main__':
+    t1 = default_timer()
     main(RUN_TEST, TEST_INPUT_PATH, INPUT_PATH)

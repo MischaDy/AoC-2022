@@ -56,13 +56,14 @@ def run_day17(input_):
         jet = next(jets_cycle)
         pos = push_rock(jet, pos, rock, chamber)
         pos, has_landed = let_rock_fall(pos, rock, chamber)
-        if has_landed:
-            num_landed_rocks += 1
-            chamber = place_landed_rock(rock, pos, chamber)
-            pos, rock = place_new_rock(rocks_cycle, chamber)
-            if PRINT:
-                print('rock landed. new rock placed...')
-                print_state(rock, pos, chamber)
+        if not has_landed:
+            continue
+        num_landed_rocks += 1
+        chamber = place_landed_rock(rock, pos, chamber)
+        pos, rock = place_new_rock(rocks_cycle, chamber)
+        if PRINT:
+            print('rock landed. new rock placed...')
+            print_state(rock, pos, chamber)
     return get_height(chamber)
 
 

@@ -2,7 +2,6 @@ from copy import deepcopy
 from itertools import cycle
 
 RUN_TEST = True
-PART = 1
 
 TEST_INPUT_PATH = 'test_input.txt'
 INPUT_PATH = 'input.txt'
@@ -35,14 +34,13 @@ ROCK_PATTERNS = [
 ]
 
 
-def main(run_test, part, test_input_path, input_path):
+def main(run_test, test_input_path, input_path):
     file_path = test_input_path if run_test else input_path
-    day_function = run_part1 if part == 1 else run_part2
     input_ = get_input(file_path)
-    print(day_function(input_))
+    print(run_day17(input_))
 
 
-def run_part1(input_):
+def run_day17(input_):
     jets_cycle = cycle(input_)
     rocks_cycle = cycle(ROCK_PATTERNS)
     chamber = [['-'] * CHAMBER_WIDTH]
@@ -225,4 +223,4 @@ def get_input(file_path, line_sep=None):
 
 
 if __name__ == '__main__':
-    main(RUN_TEST, PART, TEST_INPUT_PATH, INPUT_PATH)
+    main(RUN_TEST, TEST_INPUT_PATH, INPUT_PATH)

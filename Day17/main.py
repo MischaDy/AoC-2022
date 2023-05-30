@@ -100,7 +100,7 @@ def print_state(rock, pos, chamber):
 
 
 def place_new_rock(rocks_cycle, chamber):
-    row_ind = get_height(chamber) + START_DIST_DOWN
+    row_ind = get_height(chamber) + START_DIST_DOWN+1  # number of *additional* spaces down
     col_ind = START_DIST_LEFT
     return (row_ind, col_ind), next(rocks_cycle)
 
@@ -157,6 +157,9 @@ def let_rock_fall(pos, rock, chamber):
             # chamber not tall enough to block this level
             continue
         for col_shift, rock_part in enumerate(rock_level):
+            if rock_part == '.':
+                # empty space can't collide with chamber
+                continue
             cur_col = col_ind + col_shift
             if chamber[rock_row_ind-1][cur_col] in ('#', '-'):
                 return pos, True
@@ -214,7 +217,7 @@ def place_landed_rock_temp(rock, pos, chamber):
 
 
 def get_height(chamber):
-    return len(chamber)
+    return len(chamber) - 1  # floor doesn't count
 
 
 def run_part2(input_):

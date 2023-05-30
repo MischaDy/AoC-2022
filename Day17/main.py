@@ -47,14 +47,9 @@ def run_part1(input_):
     rocks_cycle = cycle(ROCK_PATTERNS)
     chamber = [['-'] * CHAMBER_WIDTH]
 
-    with open('debug.txt', 'r') as f:
-        temp_heights = f.readlines()
-    temp_heights = list(map(int, temp_heights))
-
     num_landed_rocks = 0
     pos, rock = place_new_rock(rocks_cycle, chamber)
 
-    global PRINT
     if PRINT:
         print('new rock placed...')
         print_state(rock, pos, chamber)
@@ -72,11 +67,6 @@ def run_part1(input_):
             if PRINT:
                 print('rock landed. new rock placed...')
                 print_state(rock, pos, chamber)
-
-            true_height = temp_heights[num_landed_rocks-1]
-            if get_height(chamber) != true_height:
-                print(f'After {num_landed_rocks} fallen rocks, height is {get_height(chamber)}, but should be {true_height}!')
-                break
         else:
             if PRINT:
                 print('rock falling...')

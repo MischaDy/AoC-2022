@@ -29,6 +29,13 @@ def run_part1(input_):
     nums = list(map(int, input_))
     init_positions = range(len(nums))
     positions = list(init_positions)
+    nums, positions = mix(nums, positions)
+    grove_coords = get_grove_coords(nums)
+    return sum(grove_coords)
+
+
+def mix(nums, positions):
+    init_positions = range(len(nums))
     for old_pos in init_positions:
         cur_pos = positions.index(old_pos)
 
@@ -39,8 +46,7 @@ def run_part1(input_):
 
         nums.insert(new_pos, num)
         positions.insert(new_pos, old_pos)
-    grove_coords = get_grove_coords(nums)
-    return sum(grove_coords)
+    return nums, positions
 
 
 def get_grove_coords(nums):

@@ -12,19 +12,6 @@ def main(run_test, part, test_input_path, input_path):
     print(day_function(input_))
 
 
-def run_part1_temp(list_):
-    positions = range(len(list_))
-    old_pos_to_new_pos = dict(zip(positions, positions))  # dict of (old_pos, new_pos)
-    for old_pos in positions:
-        cur_pos = old_pos_to_new_pos[old_pos]
-        num = list_.pop(cur_pos)
-        new_pos = cur_pos + num
-        list_.insert(new_pos, num)  # TODO: fix negative shift
-        update_after_shift(old_pos, new_pos, old_pos_to_new_pos)
-    grove_coords = get_grove_coords()
-    return grove_coords
-
-
 def run_part1(input_):
     nums = list(map(int, input_))
     init_positions = range(len(nums))

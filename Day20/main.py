@@ -1,5 +1,5 @@
 RUN_TEST = False
-PART = 1
+PART = 2
 
 TEST_INPUT_PATH = 'test_input.txt'
 INPUT_PATH = 'input.txt'
@@ -44,7 +44,16 @@ def get_grove_coords(nums):
 
 
 def run_part2(input_):
-    pass
+    mixings = 10
+    decryption_key = 811589153
+    nums = [decryption_key * int(val)
+            for val in input_]
+    init_positions = range(len(nums))
+    positions = list(init_positions)
+    for mixing in range(mixings):
+        nums, positions = mix(nums, positions)
+    grove_coords = get_grove_coords(nums)
+    return sum(grove_coords)
 
 
 def get_input(file_path, line_sep=None):

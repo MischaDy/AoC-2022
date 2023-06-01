@@ -7,7 +7,7 @@ RUN_TEST = True
 TEST_INPUT_PATH = 'test_input.txt'
 INPUT_PATH = 'input.txt'
 
-NUM_LANDED_ROCKS = int(1e5)  # goal: 1e12!!
+NUM_LANDED_ROCKS = int(2e4)  # goal: 1e12!!
 PRINT = False  # debug
 
 CHAMBER_WIDTH = 7
@@ -60,10 +60,20 @@ def run_day17(input_):
             continue
         num_landed_rocks += 1
         chamber = place_landed_rock(rock, pos, chamber)
+
+        # if PRINT:
+        rock_height = len(rock)
+        rock_row, rock_col = pos
+        for cr, chamber_row in enumerate(chamber[rock_row-rock_height:]):
+            if set(chamber_row) == {'#'}:
+                # full row!
+                print(f'after {num_landed_rocks} rocks, the chamber row {cr} is full')
+
         pos, rock = place_new_rock(rocks_cycle, chamber)
         if PRINT:
             print('rock landed. new rock placed...')
             print_state(rock, pos, chamber)
+    print_chamber(chamber[-100:])
     return get_height(chamber)
 
 
